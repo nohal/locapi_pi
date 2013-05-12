@@ -29,6 +29,11 @@
 #ifndef _LOCAPIPI_H_
 #define _LOCAPIPI_H_
 
+#include <windows.h>
+#include <atlbase.h>
+#include <atlcom.h>
+#include <LocationApi.h>
+
 #include "wx/wxprec.h"
 
 #ifndef  WX_PRECOMP
@@ -42,8 +47,6 @@
 #define     MY_API_VERSION_MINOR    6
 
 #include "../../../include/ocpn_plugin.h"
-
-#define LOCAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition
@@ -67,11 +70,21 @@ public:
     wxString GetShortDescription();
     wxString GetLongDescription();
 
+	void Notify();
+    void SetInterval( int interval );
+
 private:
     wxFileConfig     *m_pconfig;
 
     bool LoadConfig ( void );
     bool SaveConfig ( void );
+
+	void OnTimer();
+	LOCATION_REPORT_STATUS status; 
+    CComPtr<ILocation> spLoc; // This is the main Location interface
+    double lfPrevLat, lfPrevLng;	double lfThisLat, lfThisLng;
+
+	int               m_interval;
 };
 
 #endif
